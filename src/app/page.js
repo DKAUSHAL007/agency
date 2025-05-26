@@ -86,7 +86,7 @@ export default function Home() {
     <main className={styles.main}>
       <div ref={container} className={styles.container}>
         <div ref={stickyMask} className={styles.stickyMask}>
-          <video autoPlay muted loop hdr>
+          <video autoPlay muted loop>
             <source src="/demon.mov" type="video/mp4" />
           </video>
         </div>
@@ -97,6 +97,7 @@ export default function Home() {
         <Column images={[images[6], images[7], images[8]]} y={y3} />
         <Column images={[images[9], images[10], images[11]]} y={y4} />
       </div>
+      <HorizontalScrollCarousel />
       <div className={styles.spacer}></div>
     </main>
   );
@@ -113,5 +114,56 @@ const Column = ({ images, y }) => {
         );
       })}
     </motion.div>
+  );
+};
+const cards = [
+  { id: 1, url: "/banner1.jpg", title: "Card 1" },
+  { id: 2, url: "/banner2.jpg", title: "Card 2" },
+];
+const HorizontalScrollCarousel = () => {
+  const targetRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
+
+  return (
+    <section ref={targetRef} className={styles.section}>
+      <div className={styles.container}>
+        <motion.div style={{ x }} className={styles.carousel}>
+          {cards.map((card) => {
+            return <Card card={card} key={card.id} />;
+          })}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+const Card = ({ card }) => {
+  return (
+    <div
+      key={card.id}
+      className={styles.card}
+    >
+      <div
+        style={{
+          backgroundImage: `url(${card.url})`,
+
+          backgroundSize: "cover",
+
+          backgroundPosition: "center",
+        }}
+        className={styles.cardImage}
+      ></div>
+
+      <div className={styles.cardTitle}>
+        <p className={styles.cardTitleText}>
+          {card.title}
+        </p>
+      </div>
+    </div>
   );
 };
